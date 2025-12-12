@@ -1,0 +1,209 @@
+body {
+    /* 使用更柔和的背景色 */
+    font-family: "Microsoft JhengHei", sans-serif;
+    text-align: center;
+    background: #f7f9fc; /* 輕盈的藍灰色背景 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+}
+
+h1 {
+    margin-top: 40px;
+    font-size: 2.5em; /* 稍微放大 */
+    color: #1a202c; /* 深色標題 */
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+}
+
+#status {
+    margin-top: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+    min-height: 1.5em; 
+    transition: transform 0.2s ease-out, color 0.2s ease-out; /* 狀態訊息動畫過渡 */
+}
+
+/* 狀態改變時的閃爍動畫 (新增) */
+.status-flash {
+    animation: statusPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    color: #e53e3e; 
+}
+
+@keyframes statusPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.board-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 20px;
+    background: #ffffff; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    z-index: 10;
+    overflow: hidden; /* 確保勝利線條動畫不會溢出 */
+}
+
+.board {
+    width: 360px; 
+    height: 360px;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px; 
+    border-radius: 15px;
+}
+
+.cell {
+    background-color: #f0f4f8; 
+    border-radius: 15px;
+    border: none;
+    font-size: 4em; 
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15), inset 0 0 5px rgba(255,255,255,0.8);
+    user-select: none; /* 防止內容被選中 */
+}
+
+.cell:hover {
+    background-color: #e2e8f0;
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.cell:active {
+    transform: scale(0.95);
+}
+
+/* X / O 顏色與樣式 */
+.cell.X {
+    color: #e53e3e; /* 醒目的紅色 */
+}
+
+.cell.O {
+    color: #3182ce; /* 醒目的藍色 */
+}
+
+/* X/O 動畫 */
+.draw-anim {
+    animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 獲勝高亮樣式 */
+.winning-cell {
+    background-color: #ffeb3b !important; 
+    box-shadow: 0 0 15px #ffeb3b, 0 0 25px #ffc107; 
+    animation: flashWin 0.8s infinite alternate;
+}
+
+@keyframes flashWin {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0.85;
+        transform: scale(1.05);
+    }
+}
+
+/* 勝利線條樣式 (新增) */
+.win-line {
+    position: absolute;
+    height: 12px; 
+    background: #4A90E2; 
+    border-radius: 6px;
+    z-index: 20; 
+    pointer-events: none; 
+    transform-origin: center center; 
+
+    /* 動畫: 繪製線條 */
+    animation: drawLine 0.5s ease-out forwards;
+}
+
+@keyframes drawLine {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* 禁手點擊晃動動畫 (新增) */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+.shake-disabled {
+    animation: shake 0.5s ease-in-out;
+}
+
+
+/* --- 控制區塊與按鈕 --- */
+.controls {
+    margin-top: 30px;
+}
+
+button {
+    background: #4a90e2; 
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px; 
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+}
+
+button:hover {
+    background: #3a7bd5;
+    transform: translateY(-4px); 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+/* 響應式調整 */
+@media (max-width: 480px) {
+    .board {
+        width: 280px;
+        height: 280px;
+        gap: 8px;
+    }
+    .cell {
+        font-size: 3em;
+    }
+    button {
+        padding: 10px 25px;
+    }
+}
